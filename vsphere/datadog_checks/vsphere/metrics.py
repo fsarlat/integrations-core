@@ -1,7 +1,7 @@
 # (C) Datadog, Inc. 2019
 # All rights reserved
 # Licensed under Simplified BSD License (see LICENSE)
-from pyVmomi import vim  # pylint: disable=E061
+from pyVmomi import vim
 
 # https://code.vmware.com/apis/358/vsphere/doc/cpu_counters.html
 

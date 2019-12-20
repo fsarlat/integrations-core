@@ -3,7 +3,6 @@
 # Licensed under Simplified BSD License (see LICENSE)
 import functools
 import ssl
-import threading
 
 from pyVim import connect
 from pyVmomi import vim, vmodl  # pylint: disable=E0611
@@ -29,6 +28,10 @@ def smart_retry(f):
     return wrapper
 
 
+class APIConnectionError(Exception):
+    pass
+
+
 class VSphereAPI(object):
     """Abstraction class over the vSphere SOAP api using the pyvmomi library"""
 
@@ -41,6 +44,10 @@ class VSphereAPI(object):
         self.batch_collector_size = instance.get('batch_property_collector_size', DEFAULT_BATCH_COLLECTOR_SIZE)
         self._conn = None
         self.smart_connect()
+
+    @smart_retry
+    def check_health(self):
+        self._conn.CurrentTime()
 
     def smart_connect(self):
         """Creates the connection object to the vSphere API using parameters supplied from the configuration.
@@ -61,7 +68,7 @@ class VSphereAPI(object):
             conn.CurrentTime()
         except Exception as e:
             err_msg = "Connection to {} failed: {}".format(ensure_unicode(self.host), e)
-            raise ConnectionError(err_msg)
+            raise APIConnectionError(err_msg)
 
         self._conn = conn
 
@@ -161,5 +168,5 @@ class VSphereAPI(object):
         try:
             max_historical_metrics = int(vcenter_settings[0].value)
             return max_historical_metrics if max_historical_metrics > 0 else float('inf')
-        except:
+        except Exception:
             return DEFAULT_MAX_QUERY_METRICS

@@ -2,8 +2,8 @@ import pytest
 from mock import ANY, MagicMock, patch
 from pyVmomi import vim
 
-from datadog_checks.vsphere import VSphereCheck
-from datadog_checks.vsphere.api import VSphereAPI
+from datadog_checks.vsphere.api import APIConnectionError, VSphereAPI
+from datadog_checks.vsphere.constants import DEFAULT_MAX_QUERY_METRICS
 
 
 def test_connect_success(realtime_instance):
@@ -33,7 +33,7 @@ def test_connect_failure(realtime_instance):
         current_time = connection.CurrentTime
         current_time.side_effect = Exception('foo')
 
-        with pytest.raises(ConnectionError):
+        with pytest.raises(APIConnectionError):
             api = VSphereAPI(realtime_instance)
             assert api._conn is None
 
@@ -64,6 +64,7 @@ def test_get_infrastructure(realtime_instance):
         root_folder.name = 'root-folder'
         infrastructure_data = api.get_infrastructure()
         assert infrastructure_data == {'foo': {}, 'bar': {}, root_folder: {'name': 'root-folder', 'parent': None}}
+        container_view.Destroy.assert_called_once()
 
 
 def test_smart_retry(realtime_instance):
@@ -78,49 +79,16 @@ def test_smart_retry(realtime_instance):
         assert smart_connect.call_count == 2
 
 
-"""def test_metric_collection(realtime_instance):
-    num_queries = 100
-    num_threads = 10
-    with patch('datadog_checks.vsphere.api.connect') as connect, patch('datadog_checks.vsphere.api.threading') as threading:
-        threading.get_ident.side_effect = [i % num_threads for i in range(num_queries)]
-        metric_collector = MetricCollector(realtime_instance)
-        assert not metric_collector._apis
+def test_get_max_query_metrics(realtime_instance):
+    with patch('datadog_checks.vsphere.api.connect'):
+        api = VSphereAPI(realtime_instance)
+        values = [12, "string", -1, Exception()]
+        expected = [12, DEFAULT_MAX_QUERY_METRICS, float('inf'), DEFAULT_MAX_QUERY_METRICS]
 
-        query_specs = MagicMock()
-        for i in range(num_queries):
-            metric_collector.query_metrics(query_specs)
-
-        assert connect.SmartConnect.call_count == num_threads
-        assert len(metric_collector._apis) == num_threads"""
-
-
-def test_vsphere_realtime(realtime_instance, aggregator):
-    realtime_instance['tags'] = ['flo:test']
-    realtime_instance['resource_filters'] = [
-        {'resource': 'vm', 'property': 'name', 'patterns': [r'^VM.*', r'^\$VM5']},
-        {'resource': 'host', 'property': 'inventory_path', 'patterns': [r'NO_HOST_LIKE_ME']},
-    ]
-    realtime_instance['thread_count'] = 24
-    import time
-
-    t = time.time()
-    check = VSphereCheck('vsphere', {}, [realtime_instance])
-    check.check(realtime_instance)
-    print(time.time() - t)
-
-
-def test_vsphere_historical(historical_instance, aggregator):
-    historical_instance['tags'] = ['flo:test']
-    historical_instance['resource_filters'] = [
-        {'resource': 'vm', 'property': 'name', 'patterns': [r'^VM.*', r'^\$VM5']},
-        {'resource': 'host', 'property': 'inventory_path', 'patterns': [r'NO_HOST_LIKE_ME']},
-    ]
-    historical_instance['thread_count'] = 8
-    historical_instance['metric_filters'] = {
-        'datastore': [r'^disk.used.latest$', r'^disk.capacity.latest$'],
-        'cluster': [r'NONE'],
-        'datacenter': [r'NONE'],
-    }
-
-    check = VSphereCheck('vsphere', {}, [historical_instance])
-    check.check(historical_instance)
+        for val, expect in zip(values, expected):
+            query_config = MagicMock()
+            query_config.return_value = [MagicMock(value=val)]
+            api._conn.content.setting.QueryOptions = query_config
+            max_metrics = api.get_max_query_metrics()
+            assert max_metrics == expect
+            query_config.assert_called_once_with("config.vpxd.stats.maxQueryMetrics")

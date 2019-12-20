@@ -9,23 +9,7 @@ from types import FunctionType, ModuleType
 from pyVmomi import vim
 
 from datadog_checks.base import ensure_unicode
-
-SHORT_ROLLUP = {
-    "average": "avg",
-    "summation": "sum",
-    "maximum": "max",
-    "minimum": "min",
-    "latest": "latest",
-    "none": "raw",
-}
-
-MOR_TYPE_AS_STRING = {
-    vim.HostSystem: 'host',
-    vim.VirtualMachine: 'vm',
-    vim.Datacenter: 'datacenter',
-    vim.Datastore: 'datastore',
-    vim.ClusterComputeResource: 'cluster',
-}
+from datadog_checks.vsphere.constants import MOR_TYPE_AS_STRING, SHORT_ROLLUP
 
 
 def format_metric_name(counter):
@@ -47,14 +31,14 @@ def match_any_regex(string, regexes):
 def is_resource_excluded_by_filters(mor, infrastructure_data, resource_filters):
     resource_type = MOR_TYPE_AS_STRING[type(mor)]
 
+    if not [f for f in resource_filters if f[0] == resource_type]:
+        # No filter for this resource, collect everything
+        return False
+
     name_filter = resource_filters.get((resource_type, 'name'))
     inventory_path_filter = resource_filters.get((resource_type, 'inventory_path'))
     hostname_filter = resource_filters.get((resource_type, 'hostname'))
     guest_hostname_filter = resource_filters.get((resource_type, 'guest_hostname'))
-
-    if not any([name_filter, inventory_path_filter, hostname_filter, guest_hostname_filter]):
-        # No filter for this resource, collect everything
-        return False
 
     if name_filter:
         mor_name = infrastructure_data.get(mor).get("name", "")
@@ -117,17 +101,17 @@ def get_parent_tags_recursively(mor, infrastructure_data):
         tags = []
         parent_name = ensure_unicode(parent_props.get('name', 'unknown'))
         if isinstance(parent, vim.HostSystem):
-            tags.append('vsphere_host:{}'.format(parent_name))
+            tags.append(u'vsphere_host:{}'.format(parent_name))
         elif isinstance(parent, vim.Folder):
-            tags.append('vsphere_folder:{}'.format(parent_name))
+            tags.append(u'vsphere_folder:{}'.format(parent_name))
         elif isinstance(parent, vim.ComputeResource):
             if isinstance(parent, vim.ClusterComputeResource):
-                tags.append('vsphere_cluster:{}'.format(parent_name))
-            tags.append('vsphere_compute:{}'.format(parent_name))
+                tags.append(u'vsphere_cluster:{}'.format(parent_name))
+            tags.append(u'vsphere_compute:{}'.format(parent_name))
         elif isinstance(parent, vim.Datacenter):
-            tags.append('vsphere_datacenter:{}'.format(parent_name))
+            tags.append(u'vsphere_datacenter:{}'.format(parent_name))
         elif isinstance(parent, vim.Datastore):
-            tags.append('vsphere_datastore:{}'.format(parent_name))
+            tags.append(u'vsphere_datastore:{}'.format(parent_name))
 
         parent_tags = get_parent_tags_recursively(parent, infrastructure_data)
         parent_tags.extend(tags)
@@ -137,10 +121,9 @@ def get_parent_tags_recursively(mor, infrastructure_data):
 
 def should_collect_per_instance_values(metric_name, resource_type):
     # TODO: Implement. For now we don't collect per-instance level metrics (aka per-core for cpu, per-vm for disk etc.)
-    # TODO: Collective per-instance metrics is really expensive for big environments and has usually little value.
-    # TODO: Also that adds an extra layer of complexity where they have to set `instance:none` to see the correct value.
-    if resource_type == vim.Datastore:
-        return True
+    # TODO: Collecting per-instance metrics is really expensive for big environments and has usually little value.
+    # TODO: Also that adds an extra layer of complexity where users have to set `instance:none` to see the correct
+    # value.
     return False
 
 

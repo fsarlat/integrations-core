@@ -32,7 +32,7 @@ def vsphere():
     # mock the server
     server_mock = get_mocked_server()
     # create a check instance
-    check = VSphereLegacyCheck('vsphere', {}, {}, [_instance()])
+    check = VSphereLegacyCheck('vsphere', {}, [_instance()])
     # patch the check instance
     check._get_server_instance = mock.MagicMock(return_value=server_mock)
     # return the check after disabling the thread pool
