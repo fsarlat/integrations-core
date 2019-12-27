@@ -53,6 +53,7 @@ class VSphereCheck(AgentCheck):
         AgentCheck.__init__(self, name, init_config, instances)
         # Configuration fields
         self.base_tags = self.instance.get("tags", [])
+        self.base_tags.append("vcenter_server:{}".format(self.instance['host']))
         self.collection_level = self.instance.get("collection_level", 1)
         self.collection_type = self.instance.get("collection_type", "realtime")
         self.resource_filters = self.instance.get("resource_filters", {})
@@ -64,6 +65,8 @@ class VSphereCheck(AgentCheck):
             "max_historical_metrics", DEFAULT_MAX_QUERY_METRICS
         )  # Updated every check run
         self.should_collect_events = self.instance.get("collect_events", self.collection_type == 'realtime')
+
+        self.excluded_host_tags = self.instance.get("excluded_host_tags", [])
 
         # Additional instance variables
         self.collected_resource_types = (
@@ -278,6 +281,8 @@ class VSphereCheck(AgentCheck):
                     hostname = None
                 else:
                     hostname = ensure_unicode(mor_props.get('hostname'))
+                    if self.excluded_host_tags:
+                        tags.extend([t for t in mor_props['tags'] if t.split(":", 1)[0] in self.excluded_host_tags])
 
                 tags.extend(self.base_tags)
 
@@ -389,12 +394,15 @@ class VSphereCheck(AgentCheck):
         vms = self.infrastructure_cache.get_mors(vim.VirtualMachine)
 
         for mor in chain(hosts, vms):
-            # Note: some mors have a None hostname
+            # Note: some mors may have a None hostname
             mor_props = self.infrastructure_cache.get_mor_props(mor)
             hostname = mor_props.get('hostname')
-            if hostname:
-                # TODO: Implement https://github.com/DataDog/integrations-core/pull/5201
-                external_host_tags.append((hostname, {self.__NAMESPACE__: mor_props['tags']}))
+            if not hostname:
+                continue
+
+            tags = [t for t in mor_props['tags'] if t.split(':')[0] not in self.excluded_host_tags]
+            tags.extend(self.base_tags)
+            external_host_tags.append((hostname, {self.__NAMESPACE__: tags}))
 
         self.set_external_tags(external_host_tags)
 

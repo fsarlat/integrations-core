@@ -135,7 +135,18 @@ instances:
     #
     # threads_count: 4
 
-    # TODO: 'excluded_host_tags', see https://github.com/DataDog/integrations-core/pull/5201/files
+    ## @param excluded_host_tags - list of strings - optional - default: []
+    ## The vSphere integration collects tags for every ESXi host or VM in your environment.
+    ## Those tags can be `vcenter_server`, vsphere_type`, `vsphere_host`, `vsphere_folder`, `vsphere_cluster`
+    ## `vsphere_compute`, `vsphere_datacenter`, `vsphere_datastore` and are attached to the vSphere metrics by default.
+    ## By default those tags are submitted as host tags but you can submit them as metric tags if you need, see:
+    ## https://docs.datadoghq.com/tagging/using_tags/
+    ## You will lose the ability to filter your hosts on the tags you specify but they will appear faster
+    ## and will remove spikes from some `count by {TAG}` queries.
+    ## A good use case is to set this parameter to `[vsphere_host]`, indeed with VM migrations this tag is expected to
+    ## change often and it is usually helpful to be informed quickly of this change.
+    #
+    # excluded_host_tags: false
 
     # TODO: CLEAN UP THAT PART
     ## @param metrics_per_query - integer - optional - default: 500

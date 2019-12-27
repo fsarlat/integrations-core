@@ -23,25 +23,6 @@ class MockedAPI(object):
         self.infrastructure_data = {}
         self.metrics_data = []
 
-        metrics_filename = 'metrics_{}.json'.format(self.instance.get('collection_type', 'realtime'))
-        with open(os.path.join(HERE, 'fixtures', metrics_filename)) as f:
-            file_data = json.load(f)
-            for el in file_data:
-                mocked = MagicMock(
-                    entity=el['entity'], value=el['value'], counterId=el['counterId'], instance=el['instance']
-                )
-                self.metrics_data.append(mocked)
-
-        with open(os.path.join(HERE, 'fixtures', 'topology.json')) as f:
-            file_data = json.load(f)
-            self.recursive_parse_topology(file_data)
-
-        for _, props in iteritems(self.infrastructure_data):
-            if 'runtime.host' in props:
-                hosts = [m for m, p in iteritems(self.infrastructure_data) if p['name'] == props['runtime.host']]
-                assert len(hosts) == 1
-                props['runtime.host'] = hosts[0]
-
     def check_health(self):
         return True
 
@@ -66,9 +47,30 @@ class MockedAPI(object):
             return [MockedCounter(m) for m in file_data]
 
     def get_infrastructure(self):
+        if not self.infrastructure_data:
+            with open(os.path.join(HERE, 'fixtures', 'topology.json')) as f:
+                file_data = json.load(f)
+                self.recursive_parse_topology(file_data)
+
+            for _, props in iteritems(self.infrastructure_data):
+                if 'runtime.host' in props:
+                    hosts = [m for m, p in iteritems(self.infrastructure_data) if p['name'] == props['runtime.host']]
+                    assert len(hosts) == 1
+                    props['runtime.host'] = hosts[0]
+
         return self.infrastructure_data
 
     def query_metrics(self, query_specs):
+        if not self.metrics_data:
+            metrics_filename = 'metrics_{}.json'.format(self.instance.get('collection_type', 'realtime'))
+            with open(os.path.join(HERE, 'fixtures', metrics_filename)) as f:
+                file_data = json.load(f)
+                for el in file_data:
+                    mocked = MagicMock(
+                        entity=el['entity'], value=el['value'], counterId=el['counterId'], instance=el['instance']
+                    )
+                    self.metrics_data.append(mocked)
+
         data = []
         for spec in query_specs:
             entity_name = self.infrastructure_data.get(spec.entity)['name']
