@@ -46,7 +46,7 @@ instances:
     ## By default this parameter will be 'true' if `collection_type: realtime` and 'false' if
     ## `collection_type: historical`
     #
-    # collect_events: true
+    # collect_events: <COLLECT_EVENTS>
 
     ## @param ssl_verify - boolean - optional - default: true
     ## Set to false to disable SSL verification, when connecting to vCenter
@@ -59,22 +59,26 @@ instances:
     #
     # ssl_capath: "<DIRECTORY_PATH>"
 
-    # <MORE SSL>?
+    # TODO: <MORE SSL>?
 
-    # TAG SECTION: include_only_marked and collect_custom_tags?
-
+    # TODO: TAG SECTION: include_only_marked and collect_custom_tags?
 
     ## @param resource_filters - list of objects - optional - default: no filter
     ## Each filter in the list is composed of three parameters.
     ## 'resource' is one of vm/host/datastore/datacenter/cluster on which to apply the filter
     ## 'patterns' is a list of matching regex, if any of those matches, the resource will be monitored.
-    ## 'property' is what the kind of property on which to apply the filter and must have one of those values:
+    ## 'property' is the kind of property on which to apply the filter and must be one of those values:
     ##    - 'property: name' (default) to filter on the resource name (defined by vCenter)
-    ##    - 'property: inventory_path' to filter on the full inventory path (ex: \/<Datacenter_name>\/vm\/<FOLDER_NAME>\/.* for all vms in the folder <FOLDER_NAME>)
+    ##    - 'property: inventory_path' to filter on the full inventory path
+    ##       (ex: \/<Datacenter_name>\/vm\/<FOLDER_NAME>\/.* for all vms in the folder <FOLDER_NAME>)
     ##    - 'property: hostname' to filter on the ESXi Host name (only valid for if 'resource' equals 'vm')
-    ##    - 'property: guest_hostname' to filter on the VM hostname (only valid for if 'resource' equals 'vm')
-    ## Note1: 'datastore', 'datacenter' and 'cluster' filters are ignored when collecting realtime metrics as those resources do not have realtime metrics
-    ## Note2: 'vm' and 'host' filters are ignored when collecting historical metrics as those resources do not have historical metrics
+    ##    - 'property: guest_hostname' to filter on the VM hostname (only valid for if 'resource' equals 'vm' and
+    ##       if VMware tools are installed)
+    ## Note1: 'datastore', 'datacenter' and 'cluster' filters are ignored when collecting realtime metrics as those
+    ##         resources do not have realtime metrics
+    ## Note2: 'vm' and 'host' filters are ignored when collecting historical metrics as those resources do not have
+    ##         historical metrics
+    #
     # resource_filters:
     #   - resource: vm
     #     property: name
@@ -93,26 +97,28 @@ instances:
     #     property: inventory_path
     #     patterns:
     #       - <INVENTORY_PATH_REGEX>
-    #
 
     ## @param metric_filters - object - optional - default: all metrics
     ## For each resource type (vm, host, datastore, datacenter, cluster) collected,
     ## you can choose which metric you want to collect using a list of regex.
     ## If you do not specify a regex for the resource, all metrics will be collected.
     ## See #TODO:<METADATA.CSV> for the list of collected metrics.
-    ## Note1: 'datastore', 'datacenter' and 'cluster' filters are ignored when collecting realtime metrics as those resources do not have realtime metrics
-    ## Note2: 'vm' and 'host' filters are ignored when collecting historical metrics as those resources do not have historical metrics
+    ## Note1: 'datastore', 'datacenter' and 'cluster' filters are ignored when collecting realtime metrics as those
+    ##         resources do not have realtime metrics
+    ## Note2: 'vm' and 'host' filters are ignored when collecting historical metrics as those resources do no
+    ##         have historical metrics
+    #
     # metric_filters:
     #   vm:
     #     - <VM_REGEX>                 # Only possible with "collection_type: realtime"
     #   host:
-    #     - <HOST_REGEX>             # Only possible with "collection_type: realtime"
+    #     - <HOST_REGEX>               # Only possible with "collection_type: realtime"
     #   datastore:
-    #     - <DATASTORE_REGEX>   # Only possible with "collection_type: historical"
+    #     - <DATASTORE_REGEX>          # Only possible with "collection_type: historical"
     #   datacenter:
-    #     - <DATACENTER_REGEX> # Only possible with "collection_type: historical"
+    #     - <DATACENTER_REGEX>         # Only possible with "collection_type: historical"
     #   cluster:
-    #     - <CLUSTER_REGEX>       # Only possible with "collection_type: historical"
+    #     - <CLUSTER_REGEX>            # Only possible with "collection_type: historical"
 
     ## @param use_guest_hostname - boolean - optional - default: false
     ## If true, the check will use the guest hostname for VMs instead of the VM name
@@ -132,62 +138,45 @@ instances:
     # TODO: 'excluded_host_tags', see https://github.com/DataDog/integrations-core/pull/5201/files
 
     # TODO: CLEAN UP THAT PART
-    ## @param batch_morlist_size - integer - optional - default: 50
-    ## This value is used to determine the number of MORs the check will retrieve metrics for in the same API call
+    ## @param metrics_per_query - integer - optional - default: 500
+    ## This value is used to determine the number of metrics the check will retrieve in the same API call.
     ## If too many API calls are made by the check, consider increasing this value
     ## If payloads are too large, consider decreasing this value
     ## A value <= 0 means unlimited: it makes one query for all the monitored objects
     #
-    # batch_morlist_size: 50
+    # metrics_per_query: 50
+
+    ## @param max_historical_metrics - integer - optional
+    ## This value is used to determine the number of historical metrics the check will retrieve in the same API call.
+    ## Historical metrics collection is limited by the "config.vpxd.stats.maxQueryMetrics" configuration option
+    ## on vCenter, any API call requesting more metrics than this value will be denied.
+    ## By default, the check will retrieve the value of this parameter but you can override this behavior by specifying
+    ## a value here.
+    #
+    # max_historical_metrics: 256
 
     ## @param batch_property_collector_size - integer - optional - default: 500
     ## This value is used to determine the maximum number of MORs returned by vCenter in the same API call,
-    ## when exploring the infrastructure
+    ## when exploring the infrastructure.
     ## If too many API calls are made by the check, consider increasing this value
     ## If payloads are too large, consider decreasing this value
     ## A value <= 0 means unlimited: it will query for the maximum number of objects at once
     #
     # batch_property_collector_size: 500
 
-    ## @param refresh_morlist_interval - integer - optional - default: 180
+    ## @param refresh_infrastructure_cache_interval - integer - optional - default: 300
     ## Number of seconds between each discovering and caching of your vSphere environment
-    ## Consider increasing this value if your environment is large, as caching can take some time to complete
+    ## Consider increasing this value if your environment is large, as caching can take some time to complete.
     #
-    # refresh_morlist_interval: 180
+    # refresh_infrastructure_cache_interval: 300
 
-    ## @param clean_morlist_interval - integer - optional - default: 2*refresh_morlist_interval
-    ## Number of seconds to wait before an object is considered deleted from your vSphere
-    ## environment and removed from the cache
-    ## This value should be higher than refresh_morlist_interval.
-    #
-    # clean_morlist_interval: 360
-
-    ## @param refresh_metrics_metadata_interval - integer - optional - default: 600
+    ## @param refresh_metrics_metadata_cache_interval - integer - optional - default: 1800
     ## Number of seconds between each refresh of the metrics metadata cache
     #
-    # refresh_metrics_metadata_interval: 600
+    # refresh_metrics_metadata_cache_interval: 1800
 
     ## @param use_legacy_check_version - boolean - required
     ## For backward compatibility reasons, it is possible to use a deprecated version of the vsphere integration by
     ## setting this field to "true".
     #
     use_legacy_check_version: false
-
-    ## @param use_guest_hostname - boolean - optional - default: false
-    ## If true, the check will use the guest hostname for VMs instead of the VM name
-    ## This requires the VM to have VMware tools installed in it. If the guest hostname is
-    ## not available, it will fallback to the VM name.
-    ## Use this if you install the agent in VMs so that the hosts are not duplicated
-    ## in the web application UI.
-    #
-    # use_guest_hostname: false
-
-
-
-
-
-
-
-
-
-

@@ -58,10 +58,10 @@ class VSphereCheck(AgentCheck):
         self.resource_filters = self.instance.get("resource_filters", {})
         self.metric_filters = self.instance.get("metric_filters", {})
         self.use_guest_hostname = self.instance.get("use_guest_hostname", False)
-        self.thread_count = self.instance.get("thread_count", DEFAULT_THREAD_COUNT)
+        self.thread_count = self.instance.get("threads_count", DEFAULT_THREAD_COUNT)
         self.metrics_per_query = self.instance.get("metrics_per_query", DEFAULT_METRICS_PER_QUERY)
         self.max_historical_metrics = self.instance.get(
-            "max_query_metrics", DEFAULT_MAX_QUERY_METRICS
+            "max_historical_metrics", DEFAULT_MAX_QUERY_METRICS
         )  # Updated every check run
         self.should_collect_events = self.instance.get("collect_events", self.collection_type == 'realtime')
 
@@ -70,8 +70,12 @@ class VSphereCheck(AgentCheck):
             REALTIME_RESOURCES if self.collection_type == 'realtime' else HISTORICAL_RESOURCES
         )
         self.latest_event_query = datetime.now()
-        self.infrastructure_cache = InfrastructureCache(interval_sec=180)
-        self.metrics_metadata_cache = MetricsMetadataCache(interval_sec=600)
+        self.infrastructure_cache = InfrastructureCache(
+            interval_sec=self.instance.get('refresh_infrastructure_cache_interval', 300)
+        )
+        self.metrics_metadata_cache = MetricsMetadataCache(
+            interval_sec=self.instance.get('refresh_metrics_metadata_cache_interval', 1800)
+        )
         self.validate_and_format_config()
         self.api = None
 
@@ -359,7 +363,10 @@ class VSphereCheck(AgentCheck):
             max_batch_size = self.metrics_per_query
         else:
             # Collection is limited by the value of `max_query_metrics` (aliased to self.max_historical_metrics)
-            max_batch_size = min(self.metrics_per_query, self.max_historical_metrics)
+            if self.metrics_per_query < 0:
+                max_batch_size = self.max_historical_metrics
+            else:
+                max_batch_size = min(self.metrics_per_query, self.max_historical_metrics)
 
         for m in mors:
             for metric in metric_ids:
