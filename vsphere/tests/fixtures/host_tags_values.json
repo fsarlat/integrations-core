@@ -1,5 +1,32 @@
 [
     [
+        "$VM3-2",
+        {
+            "vsphere": [
+                "vsphere_host:10.0.0.103",
+                "vsphere_folder:Datacenters",
+                "vsphere_datacenter:Datacenter2",
+                "vsphere_folder:vm",
+                "vsphere_folder:Discovered virtual machine",
+                "vsphere_type:vm",
+                "vcenter_server:FAKE"
+            ]
+        }
+    ],
+    [
+        "$VM5",
+        {
+            "vsphere": [
+                "vsphere_host:10.0.0.103",
+                "vsphere_folder:Datacenters",
+                "vsphere_datacenter:Datacenter2",
+                "vsphere_folder:vm",
+                "vsphere_type:vm",
+                "vcenter_server:FAKE"
+            ]
+        }
+    ],
+    [
         "10.0.0.101",
         {
             "vsphere": [
@@ -56,6 +83,173 @@
         }
     ],
     [
+        "VM3-1",
+        {
+            "vsphere": [
+                "vsphere_host:10.0.0.103",
+                "vsphere_folder:Datacenters",
+                "vsphere_datacenter:Datacenter2",
+                "vsphere_folder:vm",
+                "vsphere_folder:Discovered virtual machine",
+                "vsphere_type:vm",
+                "vcenter_server:FAKE"
+            ]
+        }
+    ],
+    [
+        "VM4-1",
+        {
+            "vsphere": [
+                "vsphere_host:10.0.0.104",
+                "vsphere_folder:Datacenters",
+                "vsphere_datacenter:Datacenter2",
+                "vsphere_folder:vm",
+                "vsphere_folder:Discovered virtual machine",
+                "vsphere_type:vm",
+                "vcenter_server:FAKE"
+            ]
+        }
+    ],    [
+        "VM4-10",
+        {
+            "vsphere": [
+                "vsphere_host:10.0.0.104",
+                "vsphere_folder:Datacenters",
+                "vsphere_datacenter:Datacenter2",
+                "vsphere_folder:vm",
+                "vsphere_folder:Discovered virtual machine",
+                "vsphere_type:vm",
+                "vcenter_server:FAKE"
+            ]
+        }
+    ],
+    [
+        "VM4-11",
+        {
+            "vsphere": [
+                "vsphere_host:10.0.0.104",
+                "vsphere_folder:Datacenters",
+                "vsphere_datacenter:Datacenter2",
+                "vsphere_folder:vm",
+                "vsphere_folder:Discovered virtual machine",
+                "vsphere_type:vm",
+                "vcenter_server:FAKE"
+            ]
+        }
+    ],
+    [
+        "VM4-12",
+        {
+            "vsphere": [
+                "vsphere_host:10.0.0.104",
+                "vsphere_folder:Datacenters",
+                "vsphere_datacenter:Datacenter2",
+                "vsphere_folder:vm",
+                "vsphere_folder:Discovered virtual machine",
+                "vsphere_type:vm",
+                "vcenter_server:FAKE"
+            ]
+        }
+    ],
+    [
+        "VM4-13",
+        {
+            "vsphere": [
+                "vsphere_host:10.0.0.104",
+                "vsphere_folder:Datacenters",
+                "vsphere_datacenter:Datacenter2",
+                "vsphere_folder:vm",
+                "vsphere_folder:Discovered virtual machine",
+                "vsphere_type:vm",
+                "vcenter_server:FAKE"
+            ]
+        }
+    ],
+    [
+        "VM4-14",
+        {
+            "vsphere": [
+                "vsphere_host:10.0.0.104",
+                "vsphere_folder:Datacenters",
+                "vsphere_datacenter:Datacenter2",
+                "vsphere_folder:vm",
+                "vsphere_folder:Discovered virtual machine",
+                "vsphere_type:vm",
+                "vcenter_server:FAKE"
+            ]
+        }
+    ],
+    [
+        "VM4-15",
+        {
+            "vsphere": [
+                "vsphere_host:10.0.0.104",
+                "vsphere_folder:Datacenters",
+                "vsphere_datacenter:Datacenter2",
+                "vsphere_folder:vm",
+                "vsphere_folder:Discovered virtual machine",
+                "vsphere_type:vm",
+                "vcenter_server:FAKE"
+            ]
+        }
+    ],
+    [
+        "VM4-16",
+        {
+            "vsphere": [
+                "vsphere_host:10.0.0.104",
+                "vsphere_folder:Datacenters",
+                "vsphere_datacenter:Datacenter2",
+                "vsphere_folder:vm",
+                "vsphere_folder:Discovered virtual machine",
+                "vsphere_type:vm",
+                "vcenter_server:FAKE"
+            ]
+        }
+    ],
+    [
+        "VM4-17",
+        {
+            "vsphere": [
+                "vsphere_host:10.0.0.104",
+                "vsphere_folder:Datacenters",
+                "vsphere_datacenter:Datacenter2",
+                "vsphere_folder:vm",
+                "vsphere_folder:Discovered virtual machine",
+                "vsphere_type:vm",
+                "vcenter_server:FAKE"
+            ]
+        }
+    ],
+    [
+        "VM4-18",
+        {
+            "vsphere": [
+                "vsphere_host:10.0.0.104",
+                "vsphere_folder:Datacenters",
+                "vsphere_datacenter:Datacenter2",
+                "vsphere_folder:vm",
+                "vsphere_folder:Discovered virtual machine",
+                "vsphere_type:vm",
+                "vcenter_server:FAKE"
+            ]
+        }
+    ],
+    [
+        "VM4-19",
+        {
+            "vsphere": [
+                "vsphere_host:10.0.0.104",
+                "vsphere_folder:Datacenters",
+                "vsphere_datacenter:Datacenter2",
+                "vsphere_folder:vm",
+                "vsphere_folder:Discovered virtual machine",
+                "vsphere_type:vm",
+                "vcenter_server:FAKE"
+            ]
+        }
+    ],
+    [
         "VM4-2",
         {
             "vsphere": [
@@ -84,49 +278,21 @@
         }
     ],
     [
+        "VM4-3",
+        {
+            "vsphere": [
+                "vsphere_host:10.0.0.104",
+                "vsphere_folder:Datacenters",
+                "vsphere_datacenter:Datacenter2",
+                "vsphere_folder:vm",
+                "vsphere_folder:Discovered virtual machine",
+                "vsphere_type:vm",
+                "vcenter_server:FAKE"
+            ]
+        }
+    ],
+    [
         "VM4-4",
-        {
-            "vsphere": [
-                "vsphere_host:10.0.0.104",
-                "vsphere_folder:Datacenters",
-                "vsphere_datacenter:Datacenter2",
-                "vsphere_folder:vm",
-                "vsphere_folder:Discovered virtual machine",
-                "vsphere_type:vm",
-                "vcenter_server:FAKE"
-            ]
-        }
-    ],
-    [
-        "VM4-14",
-        {
-            "vsphere": [
-                "vsphere_host:10.0.0.104",
-                "vsphere_folder:Datacenters",
-                "vsphere_datacenter:Datacenter2",
-                "vsphere_folder:vm",
-                "vsphere_folder:Discovered virtual machine",
-                "vsphere_type:vm",
-                "vcenter_server:FAKE"
-            ]
-        }
-    ],
-    [
-        "VM4-9",
-        {
-            "vsphere": [
-                "vsphere_host:10.0.0.104",
-                "vsphere_folder:Datacenters",
-                "vsphere_datacenter:Datacenter2",
-                "vsphere_folder:vm",
-                "vsphere_folder:Discovered virtual machine",
-                "vsphere_type:vm",
-                "vcenter_server:FAKE"
-            ]
-        }
-    ],
-    [
-        "VM4-15",
         {
             "vsphere": [
                 "vsphere_host:10.0.0.104",
@@ -154,105 +320,7 @@
         }
     ],
     [
-        "VM4-3",
-        {
-            "vsphere": [
-                "vsphere_host:10.0.0.104",
-                "vsphere_folder:Datacenters",
-                "vsphere_datacenter:Datacenter2",
-                "vsphere_folder:vm",
-                "vsphere_folder:Discovered virtual machine",
-                "vsphere_type:vm",
-                "vcenter_server:FAKE"
-            ]
-        }
-    ],
-    [
-        "VM4-12",
-        {
-            "vsphere": [
-                "vsphere_host:10.0.0.104",
-                "vsphere_folder:Datacenters",
-                "vsphere_datacenter:Datacenter2",
-                "vsphere_folder:vm",
-                "vsphere_folder:Discovered virtual machine",
-                "vsphere_type:vm",
-                "vcenter_server:FAKE"
-            ]
-        }
-    ],
-    [
-        "VM4-11",
-        {
-            "vsphere": [
-                "vsphere_host:10.0.0.104",
-                "vsphere_folder:Datacenters",
-                "vsphere_datacenter:Datacenter2",
-                "vsphere_folder:vm",
-                "vsphere_folder:Discovered virtual machine",
-                "vsphere_type:vm",
-                "vcenter_server:FAKE"
-            ]
-        }
-    ],
-    [
         "VM4-6",
-        {
-            "vsphere": [
-                "vsphere_host:10.0.0.104",
-                "vsphere_folder:Datacenters",
-                "vsphere_datacenter:Datacenter2",
-                "vsphere_folder:vm",
-                "vsphere_folder:Discovered virtual machine",
-                "vsphere_type:vm",
-                "vcenter_server:FAKE"
-            ]
-        }
-    ],
-    [
-        "VM4-13",
-        {
-            "vsphere": [
-                "vsphere_host:10.0.0.104",
-                "vsphere_folder:Datacenters",
-                "vsphere_datacenter:Datacenter2",
-                "vsphere_folder:vm",
-                "vsphere_folder:Discovered virtual machine",
-                "vsphere_type:vm",
-                "vcenter_server:FAKE"
-            ]
-        }
-    ],
-    [
-        "VM4-1",
-        {
-            "vsphere": [
-                "vsphere_host:10.0.0.104",
-                "vsphere_folder:Datacenters",
-                "vsphere_datacenter:Datacenter2",
-                "vsphere_folder:vm",
-                "vsphere_folder:Discovered virtual machine",
-                "vsphere_type:vm",
-                "vcenter_server:FAKE"
-            ]
-        }
-    ],
-    [
-        "VM4-19",
-        {
-            "vsphere": [
-                "vsphere_host:10.0.0.104",
-                "vsphere_folder:Datacenters",
-                "vsphere_datacenter:Datacenter2",
-                "vsphere_folder:vm",
-                "vsphere_folder:Discovered virtual machine",
-                "vsphere_type:vm",
-                "vcenter_server:FAKE"
-            ]
-        }
-    ],
-    [
-        "VM4-18",
         {
             "vsphere": [
                 "vsphere_host:10.0.0.104",
@@ -280,48 +348,6 @@
         }
     ],
     [
-        "VM4-17",
-        {
-            "vsphere": [
-                "vsphere_host:10.0.0.104",
-                "vsphere_folder:Datacenters",
-                "vsphere_datacenter:Datacenter2",
-                "vsphere_folder:vm",
-                "vsphere_folder:Discovered virtual machine",
-                "vsphere_type:vm",
-                "vcenter_server:FAKE"
-            ]
-        }
-    ],
-    [
-        "VM4-10",
-        {
-            "vsphere": [
-                "vsphere_host:10.0.0.104",
-                "vsphere_folder:Datacenters",
-                "vsphere_datacenter:Datacenter2",
-                "vsphere_folder:vm",
-                "vsphere_folder:Discovered virtual machine",
-                "vsphere_type:vm",
-                "vcenter_server:FAKE"
-            ]
-        }
-    ],
-    [
-        "VM4-16",
-        {
-            "vsphere": [
-                "vsphere_host:10.0.0.104",
-                "vsphere_folder:Datacenters",
-                "vsphere_datacenter:Datacenter2",
-                "vsphere_folder:vm",
-                "vsphere_folder:Discovered virtual machine",
-                "vsphere_type:vm",
-                "vcenter_server:FAKE"
-            ]
-        }
-    ],
-    [
         "VM4-8",
         {
             "vsphere": [
@@ -336,41 +362,14 @@
         }
     ],
     [
-        "VM3-1",
+        "VM4-9",
         {
             "vsphere": [
-                "vsphere_host:10.0.0.103",
+                "vsphere_host:10.0.0.104",
                 "vsphere_folder:Datacenters",
                 "vsphere_datacenter:Datacenter2",
                 "vsphere_folder:vm",
                 "vsphere_folder:Discovered virtual machine",
-                "vsphere_type:vm",
-                "vcenter_server:FAKE"
-            ]
-        }
-    ],
-    [
-        "$VM3-2",
-        {
-            "vsphere": [
-                "vsphere_host:10.0.0.103",
-                "vsphere_folder:Datacenters",
-                "vsphere_datacenter:Datacenter2",
-                "vsphere_folder:vm",
-                "vsphere_folder:Discovered virtual machine",
-                "vsphere_type:vm",
-                "vcenter_server:FAKE"
-            ]
-        }
-    ],
-    [
-        "$VM5",
-        {
-            "vsphere": [
-                "vsphere_host:10.0.0.103",
-                "vsphere_folder:Datacenters",
-                "vsphere_datacenter:Datacenter2",
-                "vsphere_folder:vm",
                 "vsphere_type:vm",
                 "vcenter_server:FAKE"
             ]

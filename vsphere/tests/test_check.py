@@ -1,7 +1,7 @@
 import json
 import os
 
-from mock import patch, MagicMock
+from mock import MagicMock, patch
 from tests.conftest import HERE
 from tests.mocked_api import MockedAPI
 
@@ -55,6 +55,7 @@ def test_external_host_tags(aggregator, realtime_instance, mock_type):
     check.set_external_tags = MagicMock()
     check.submit_external_host_tags()
     submitted_tags = check.set_external_tags.mock_calls[0].args[0]
+    submitted_tags.sort(key=lambda x: x[0])
     for ex, sub in zip(expected_tags, submitted_tags):
         ex_host, sub_host = ex[0], sub[0]
         ex_tags, sub_tags = ex[1]['vsphere'], sub[1]['vsphere']
@@ -65,6 +66,7 @@ def test_external_host_tags(aggregator, realtime_instance, mock_type):
     check.set_external_tags = MagicMock()
     check.submit_external_host_tags()
     submitted_tags = check.set_external_tags.mock_calls[0].args[0]
+    submitted_tags.sort(key=lambda x: x[0])
     for ex, sub in zip(expected_tags, submitted_tags):
         ex_host, sub_host = ex[0], sub[0]
         ex_tags, sub_tags = ex[1]['vsphere'], sub[1]['vsphere']
