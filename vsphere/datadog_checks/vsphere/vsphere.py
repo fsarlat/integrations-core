@@ -479,7 +479,13 @@ class VSphereCheck(AgentCheck):
             # Submit host tags as soon as we have fresh data
             self.submit_external_host_tags()
 
+        # Collect and submit events
         if self.should_collect_events:
             self.collect_events()
+
+        # Submit the number of VMs that are monitored
+        if vim.VirtualMachine in self.collected_resource_types:
+            vm_count = len(self.infrastructure_cache.get_mors(vim.VirtualMachine))
+            self.gauge('vm.count', vm_count, tags=self.base_tags, hostname=None)
 
         self.collect_metrics()
