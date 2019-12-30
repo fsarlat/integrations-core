@@ -163,7 +163,7 @@ class VSphereCheck(AgentCheck):
         """Request the list of counters (metrics) from vSphere and store them in a cache."""
         counters = self.api.get_perf_counter_by_level(self.collection_level)
 
-        for mor_type in ALL_RESOURCES_WITH_METRICS:
+        for mor_type in self.collected_resource_types:
             allowed_counters = []
             for c in counters:
                 metric_name = format_metric_name(c)
@@ -228,9 +228,14 @@ class VSphereCheck(AgentCheck):
 
             self.infrastructure_cache.set_mor_data(mor, mor_payload)
 
-    def submit_metrics_callback(self, results):
+    def submit_metrics_callback(self, task):
         """Callback of the collection of metrics. This is run in the main thread!"""
         # TODO better exception handling of the Future
+        try:
+            results = task.result()
+        except Exception as e:
+            self.log.warning("Thread error was %s", e)
+            return
 
         if not results:
             # No metric from this call, maybe the mor is disconnected?
@@ -341,8 +346,7 @@ class VSphereCheck(AgentCheck):
             finished_tasks = []
             for task in tasks:
                 if task.done():
-                    results = task.result()
-                    self.submit_metrics_callback(results)
+                    self.submit_metrics_callback(task)
                     finished_tasks.append(task)
 
             for task in finished_tasks:

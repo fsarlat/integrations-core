@@ -587,11 +587,11 @@ DATACENTER_METRICS = {
 CLUSTER_METRICS = {
     # clusterServices are only available for DRS and HA clusters, and are causing errors. Let's deactivate for now
     # but they were collected before so investigate why
-    # 'clusterServices.cpufairness.latest': (1, 3),
-    # 'clusterServices.effectivecpu.avg': (1, 3),
-    # 'clusterServices.effectivemem.avg': (1, 3),
-    # 'clusterServices.failover.latest': (1, 3),
-    # 'clusterServices.memfairness.latest': (1, 3),
+    'clusterServices.cpufairness.latest': (1, 3),
+    'clusterServices.effectivecpu.avg': (1, 3),
+    'clusterServices.effectivemem.avg': (1, 3),
+    'clusterServices.failover.latest': (1, 3),
+    'clusterServices.memfairness.latest': (1, 3),
     'cpu.totalmhz.avg': (1, 3),
     'cpu.usage.avg': (1, 3, True),
     'cpu.usagemhz.avg': (1, 3),
