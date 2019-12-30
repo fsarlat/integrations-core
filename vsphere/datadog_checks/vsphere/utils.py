@@ -1,7 +1,6 @@
 # (C) Datadog, Inc. 2019
 # All rights reserved
 # Licensed under Simplified BSD License (see LICENSE)
-import re
 import sys
 from gc import get_referents
 from types import FunctionType, ModuleType
@@ -22,7 +21,7 @@ def format_metric_name(counter):
 
 def match_any_regex(string, regexes):
     for regex in regexes:
-        match = re.search(regex, string)  # FIXME: Should we use re.IGNORECASE like legacy?
+        match = regex.match(string)  # FIXME: Should we use re.IGNORECASE like legacy?
         if match:
             return True
     return False

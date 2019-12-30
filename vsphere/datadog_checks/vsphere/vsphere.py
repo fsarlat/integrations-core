@@ -1,6 +1,7 @@
 # (C) Datadog, Inc. 2019
 # All rights reserved
 # Licensed under Simplified BSD License (see LICENSE)
+import re
 import time
 from collections import defaultdict
 from concurrent.futures.thread import ThreadPoolExecutor
@@ -127,7 +128,7 @@ class VSphereCheck(AgentCheck):
                 continue
 
             allowed_prop_names = ALLOWED_FILTER_PROPERTIES
-            if f['resource'] == MOR_TYPE_AS_STRING[vim.Datastore]:
+            if f['resource'] == MOR_TYPE_AS_STRING[vim.VirtualMachine]:
                 allowed_prop_names += EXTRA_FILTER_PROPERTIES_FOR_VMS
 
             if f['property'] not in allowed_prop_names:
@@ -151,9 +152,12 @@ class VSphereCheck(AgentCheck):
                 )
                 continue
 
-            formatted_resource_filters[filter_key] = f['patterns']
+            formatted_resource_filters[filter_key] = [re.compile(r) for r in f['patterns']]
 
         self.resource_filters = formatted_resource_filters
+
+        # Compile all the regex in-place
+        self.metric_filters = {k: [re.compile(r) for r in v] for k, v in iteritems(self.metric_filters)}
 
     def refresh_metrics_metadata_cache(self):
         """Request the list of counters (metrics) from vSphere and store them in a cache."""

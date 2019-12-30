@@ -34,6 +34,8 @@ class MockedAPI(object):
             self.infrastructure_data[current_mor]['runtime.powerState'] = vim.VirtualMachinePowerState.poweredOn
         if 'runtime.host' in subtree:
             self.infrastructure_data[current_mor]['runtime.host'] = subtree['runtime.host']
+        if 'guest.hostName' in subtree:
+            self.infrastructure_data[current_mor]['guest.hostName'] = subtree['guest.hostName']
 
         for c in children:
             self.recursive_parse_topology(c, parent=current_mor)

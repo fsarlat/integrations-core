@@ -34,8 +34,7 @@ def test_connect_failure(realtime_instance):
         current_time.side_effect = Exception('foo')
 
         with pytest.raises(APIConnectionError):
-            api = VSphereAPI(realtime_instance)
-            assert api._conn is None
+            VSphereAPI(realtime_instance)
 
         smart_connect.assert_called_once_with(
             host=realtime_instance['host'],

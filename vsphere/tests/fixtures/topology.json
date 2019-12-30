@@ -18,7 +18,8 @@
                         {
                             "spec": "VirtualMachine",
                             "name": "VM1-6ê",
-                            "runtime.powerState": "off"
+                            "runtime.powerState": "off",
+                            "guest.hostName": "ubuntu-test"
                         },
                         {
                             "spec": "VirtualMachine",
