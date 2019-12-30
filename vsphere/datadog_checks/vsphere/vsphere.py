@@ -83,8 +83,6 @@ class VSphereCheck(AgentCheck):
         self.validate_and_format_config()
         self.api = None
 
-        self._no_thread_mode = False
-
     def validate_and_format_config(self):
         """Validate that the config is correct and transform resource filters into a more manageable object."""
 
@@ -335,11 +333,7 @@ class VSphereCheck(AgentCheck):
                         query_spec.startTime = datetime.now() - timedelta(hours=2)
                     query_specs.append(query_spec)
                 if query_specs:
-                    if self._no_thread_mode:
-                        results = self.api.query_metrics(query_specs)
-                        self.submit_metrics_callback(results)
-                    else:
-                        tasks.append(pool_executor.submit(lambda q: self.api.query_metrics(q), query_specs))
+                    tasks.append(pool_executor.submit(lambda q: self.api.query_metrics(q), query_specs))
 
         # TODO: ugly but works
         while tasks:

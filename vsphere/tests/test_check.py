@@ -8,11 +8,10 @@ from tests.mocked_api import MockedAPI
 from datadog_checks.vsphere import VSphereCheck
 
 
-def test_realtime_metrics(aggregator, realtime_instance, mock_type):
+def test_realtime_metrics(aggregator, realtime_instance, mock_type, mock_threadpool):
     """This test asserts that the same api content always produces the same metrics."""
     with patch('datadog_checks.vsphere.vsphere.VSphereAPI', MockedAPI):
         check = VSphereCheck('vsphere', {}, [realtime_instance])
-        check._no_thread_mode = True
         check.check(realtime_instance)
 
     fixture_file = os.path.join(HERE, 'fixtures', 'metrics_realtime_values.json')
@@ -21,14 +20,14 @@ def test_realtime_metrics(aggregator, realtime_instance, mock_type):
         for metric in data:
             aggregator.assert_metric(metric['name'], metric['value'], hostname=metric['hostname'])
 
+    aggregator.assert_metric('vsphere.vm.count', 23)
     aggregator.assert_all_metrics_covered()
 
 
-def test_historical_metrics(aggregator, historical_instance, mock_type):
+def test_historical_metrics(aggregator, historical_instance, mock_type, mock_threadpool):
     """This test asserts that the same api content always produces the same metrics."""
     with patch('datadog_checks.vsphere.vsphere.VSphereAPI', MockedAPI):
         check = VSphereCheck('vsphere', {}, [historical_instance])
-        check._no_thread_mode = True
         check.check(historical_instance)
 
     fixture_file = os.path.join(HERE, 'fixtures', 'metrics_historical_values.json')
