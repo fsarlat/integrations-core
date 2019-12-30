@@ -24,6 +24,7 @@ instances:
     ## @param collection_level - integer - optional - default: 1
     ## A number between 1 and 4 to specify how many metrics will be sent
     ## 1: Only basic metrics - 4: every metric available.
+    ## See https://code.vmware.com/apis/704/vsphere/vim.PerformanceManager.html for more details
     ## Warning: Depending on the size of the vSphere environment, metric collection can be slow,
     ## very CPU intensive and put pressure on the vCenter Server
     ## If you want more control on the metrics to collect, see `metric_filters`
