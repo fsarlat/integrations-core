@@ -1960,6 +1960,81 @@ def test_label_join_state_change(aggregator, mocked_prometheus_check, mocked_pro
         assert mocked_prometheus_scraper_config['_label_mapping']['pod']['dd-agent-62bgh']['phase'] == 'Test'
 
 
+def test_label_join_cross_ns_overlap(aggregator, mocked_prometheus_check, mocked_prometheus_scraper_config, mock_get):
+    """ Tests label join and hostname override on a metric """
+    check = mocked_prometheus_check
+    mocked_prometheus_scraper_config['namespace'] = 'ksm'
+    mocked_prometheus_scraper_config['label_joins'] = {
+        'kube_persistentvolumeclaim_info': {
+            'label_to_match': 'persistentvolumeclaim',
+            'labels_to_get': ['storageclass'],
+        },
+        'kube_persistentvolumeclaim_status_phase': {
+            'label_to_match': 'persistentvolumeclaim',
+            'labels_to_get': ['phase'],
+        },
+    }
+    mocked_prometheus_scraper_config['label_to_hostname'] = 'node'
+    mocked_prometheus_scraper_config['metrics_mapper'] = {
+        'kube_persistentvolumeclaim_status_phase': 'persistentvolumeclaim.status',
+        'kube_persistentvolumeclaim_resource_requests_storage_bytes': 'persistentvolumeclaim.request_storage'
+    }
+    mocked_prometheus_scraper_config['use_namespaced_tag_matching'] = True
+    # dry run to build mapping
+    check.process(mocked_prometheus_scraper_config)
+    # run with submit
+    check.process(mocked_prometheus_scraper_config)
+    # check a bunch of metrics
+    aggregator.assert_metric(
+        'ksm.persistentvolumeclaim.status',
+        1.0,
+        tags=[
+            'namespace:default',
+            'persistentvolumeclaim:www-web-1',
+            'phase:Bound',
+            'storageclass:standard'
+        ],
+        hostname='',
+        count=1,
+    )
+    aggregator.assert_metric(
+        'ksm.persistentvolumeclaim.status',
+        1.0,
+        tags=[
+            'namespace:foo',
+            'persistentvolumeclaim:www-web-1',
+            'phase:Lost',
+            'storageclass:standard'
+        ],
+        hostname='',
+        count=1,
+    )
+    aggregator.assert_metric(
+        'ksm.persistentvolumeclaim.request_storage',
+        1073741824.0,
+        tags=[
+            'namespace:default',
+            'persistentvolumeclaim:www-web-1',
+            'phase:Bound',
+            'storageclass:standard'
+        ],
+        hostname='',
+        count=1,
+    )
+    aggregator.assert_metric(
+        'ksm.persistentvolumeclaim.request_storage',
+        2073741824.0,
+        tags=[
+            'namespace:foo',
+            'persistentvolumeclaim:www-web-1',
+            'phase:Lost',
+            'storageclass:standard'
+        ],
+        hostname='',
+        count=1,
+    )
+
+
 def test_health_service_check_ok(mock_get, aggregator, mocked_prometheus_check, mocked_prometheus_scraper_config):
     """ Tests endpoint health service check OK """
     check = mocked_prometheus_check
